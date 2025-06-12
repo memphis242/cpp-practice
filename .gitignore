@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+# List Files
+*.lst
