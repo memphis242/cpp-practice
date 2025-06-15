@@ -1,11 +1,12 @@
 #include <iostream>
 #include <cstdint>
 #include <cassert>
+#include <algorithm>
 
 /* constexpr helper functions */
 
 /* Forward Declarations of Local Functions */
-static size_t count_occurences( const char * str, size_t len, char c );
+static size_t count_occurrences( const std::string&, char c );
 
 /* Main Program */
 int main(void)
@@ -31,7 +32,7 @@ int main(void)
    //         to access the value held by the reference.
    //       - A reference cannot be made to refer to a different object after
    //         initialization.
-   for ( auto &e : arr )
+   for ( auto& e : arr )
    {
       std::cout << ++e << " ";
    }
@@ -39,39 +40,27 @@ int main(void)
    std::cout << std::endl;
 
    // 🗒: nullptr is the C++ null pointer value
-   const char * TEST_STRING = "Hello world!";
-   std::cout << "h:       " << count_occurences( TEST_STRING, sizeof(TEST_STRING),  'h'  ) << std::endl;
-   std::cout << "a:       " << count_occurences( TEST_STRING, sizeof(TEST_STRING),  'a'  ) << std::endl;
-   std::cout << "l:       " << count_occurences( TEST_STRING, sizeof(TEST_STRING),  'l'  ) << std::endl;
-   std::cout << "\\0:      " << count_occurences( TEST_STRING, sizeof(TEST_STRING), '\0' ) << std::endl;
-   std::cout << "nullptr: " << count_occurences( nullptr,     sizeof(TEST_STRING),  '\0' ) << std::endl;
+   //const char * TEST_STRING = "Hello world!";
+   const std::string TestStr = "Hello world!";
+   std::cout << "h:       "  << count_occurrences( TestStr, 'h'  ) << std::endl;
+   std::cout << "a:       "  << count_occurrences( TestStr, 'a'  ) << std::endl;
+   std::cout << "l:       "  << count_occurrences( TestStr, 'l'  ) << std::endl;
+   std::cout << "\\0:      " << count_occurrences( TestStr, '\0' ) << std::endl;
+   //std::cout << "nullptr: "  << count_occurrences( nullptr, '\0' ) << std::endl;
    std::cout << std::endl;
 }
 
 /**
  * @brief Counts how many times a character appears in a string.
  *
- * @param str Pointer to the input C-string.
- * @param len The maximum number of characters to examine in the string.
+ * @param str The std::string
  * @param c The character to count occurrences of.
- * @return size_t The number of times the character 'c' appears in the string, or 1 if 'c' is the null terminator.
+ * @return size_t The number of times the character 'c' appears in the string
  *
  * @note If 'str' is nullptr or 'len' is 0, the function returns 0.
  * @note If 'c' is the null terminator ('\0'), the function returns 1.
  */
-static size_t count_occurences( const char * str, size_t len, char c )
+static size_t count_occurrences( const std::string& str, char c )
 {
-   if ( (nullptr == str) || (0 == len) ) return 0;
-   if ( '\0' == c ) return 1;
-
-   size_t count = 0;
-   size_t i = 0;
-   while ( (str[i] != '\0') && (i <= len) )
-   {
-      if ( str[i] == c ) count++;
-      i++;
-   }
-
-   assert(count < len);
-   return count;
+   return std::count(str.begin(), str.end(), c);
 }
