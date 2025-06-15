@@ -31,16 +31,21 @@ class Vector
 {
    public:
       Vector(size_t sz):
-         elements {new double[sz]},
+         // The lines below for the private variables of the class are called
+         // initializer list. Note that the '=' syntax won't work here. It
+         // needs to be the {} pair.
+         elements { new double[sz] },
          sz {sz}
-         { }
+         {
+            /* Empty constructor body */
+         }
       
       ~Vector()
       {
          delete[] elements;
       }
       
-      double& operator[](int i)
+      double& operator [] (int i)  // Operator [] overload (subscript function)
       {
          return elements[i];
       }
