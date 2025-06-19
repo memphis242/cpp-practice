@@ -51,14 +51,32 @@ CXXFLAGS ?= $(COMPILER_WARNINGS) $(COMPILER_STATIC_ANALYZER) \
 
 LDFLAGS += $(DIAGNOSTIC_FLAGS)
 
-%.$(TARGET_EXTENSION): %.o %.lst
+OBJ_FILES = ch2-3.o CTrafficLight_E.o CppTrafficLight_E.o
+
+ch2-3.exe: $(OBJ_FILES) ch2-3.lst
 	@echo
 	@echo "----------------------------------------"
 	@echo -e "\033[36mProducing output executable\033[0m $@..."
 	@echo
-	$(GXX) $(LDFLAGS) $< -o $@
+	$(GXX) $(LDFLAGS) $(OBJ_FILES) -o $@
+
+#%.$(TARGET_EXTENSION): %.o %.lst
+#	@echo
+#	@echo "----------------------------------------"
+#	@echo -e "\033[36mProducing output executable\033[0m $@..."
+#	@echo
+#	$(GXX) $(LDFLAGS) $< -o $@
+
 
 %.o: %.cpp
+	@echo
+	@echo "----------------------------------------"
+	@echo -e "\033[36mCompiling\033[0m the source file: $<..."
+	@echo
+	$(GXX) $(CXXFLAGS) -c $< -o $@
+# $(GXX) $(CXXFLAGS) -Wa,-alh=$(basename $@)_fromcomp.lst -c $< -o $@
+
+%.o: %.c
 	@echo
 	@echo "----------------------------------------"
 	@echo -e "\033[36mCompiling\033[0m the source file: $<..."
@@ -74,8 +92,8 @@ LDFLAGS += $(DIAGNOSTIC_FLAGS)
 	$(CROSS)objdump -D $< > $@
 
 clean:
-	rm ./*.exe
-	rm ./*.lst
-	rm ./*.o
+	rm -f *.exe
+	rm -f *.lst
+	rm -f *.o
 
 .PRECIOUS: %.o

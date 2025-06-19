@@ -1,4 +1,6 @@
 #include <iostream>
+#include "CppTrafficLight_E.hpp"
+#include "CTrafficLight_E.h"
 
 /*****************************************/
 /* Half-baked procedural vector class... */
@@ -68,97 +70,6 @@ class Vector
       double * elements;
       size_t sz;
 };
-
-/*****************************************/
-/*****************************************/
-// Example C-style enum
-enum CTrafficLight_E
-{
-   Green,
-   Yellow,
-   Red,
-   NumOfTrafficLightOptions
-};
-
-static const char * CTrafficLight_E_ToString(enum CTrafficLight_E light)
-{
-   switch ( light )
-   {
-      case Green:
-         return "Green (0)";
-      
-      case Yellow:
-         return "Yellow (1)";
-
-      case Red:
-         return "Red (2)";
-
-      default:
-         static char str[12];
-         sprintf( str, "Unknown: %d", (int)light );
-         return (const char *)str;
-   }
-}
-
-// Example C++ enum class
-enum class CppTrafficLight_E
-{
-   Green,
-   Yellow,
-   Red,
-   NumOfTrafficLightOptions
-};
-
-// Prefix Increment
-CppTrafficLight_E& operator ++ (CppTrafficLight_E& light)
-{
-   switch( light )
-   {
-      case CppTrafficLight_E::Green:
-         light = CppTrafficLight_E::Yellow;
-         break;
-
-      case CppTrafficLight_E::Yellow:
-         light = CppTrafficLight_E::Red;
-         break;
-
-      case CppTrafficLight_E::Red:
-         // Wrap back around
-         light = CppTrafficLight_E::Green;
-         break;
-      
-      default:
-         // TODO: Throw exception: Invalid operation on traffic light enum
-         break;
-   }
-   return light;
-}
-
-// Postfix Increment
-CppTrafficLight_E operator ++ (CppTrafficLight_E& light, int)
-{
-   CppTrafficLight_E old = light;
-   ++light;
-   return old;
-}
-
-std::ostream& operator << ( std::ostream& os, CppTrafficLight_E light )
-{
-   switch ( light )
-   {
-      case CppTrafficLight_E::Green:
-         return os << "Green (0)";
-
-      case CppTrafficLight_E::Yellow:
-         return os << "Yellow (1)";
-
-      case CppTrafficLight_E::Red:
-         return os << "Red (2)";
-      
-      default:
-         return os << "Unknown";
-   }
-}
 
 /*****************************************/
 
