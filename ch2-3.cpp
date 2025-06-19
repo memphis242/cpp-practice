@@ -70,6 +70,97 @@ class Vector
 };
 
 /*****************************************/
+/*****************************************/
+// Example C-style enum
+enum CTrafficLight_E
+{
+   Green,
+   Yellow,
+   Red,
+   NumOfTrafficLightOptions
+};
+
+static const char * CTrafficLight_E_ToString(enum CTrafficLight_E light)
+{
+   switch ( light )
+   {
+      case Green:
+         return "Green (0)";
+      
+      case Yellow:
+         return "Yellow (1)";
+
+      case Red:
+         return "Red (2)";
+
+      default:
+         static char str[12];
+         sprintf( str, "Unknown: %d", (int)light );
+         return (const char *)str;
+   }
+}
+
+// Example C++ enum class
+enum class CppTrafficLight_E
+{
+   Green,
+   Yellow,
+   Red,
+   NumOfTrafficLightOptions
+};
+
+// Prefix Increment
+CppTrafficLight_E& operator ++ (CppTrafficLight_E& light)
+{
+   switch( light )
+   {
+      case CppTrafficLight_E::Green:
+         light = CppTrafficLight_E::Yellow;
+         break;
+
+      case CppTrafficLight_E::Yellow:
+         light = CppTrafficLight_E::Red;
+         break;
+
+      case CppTrafficLight_E::Red:
+         // Wrap back around
+         light = CppTrafficLight_E::Green;
+         break;
+      
+      default:
+         // TODO: Throw exception: Invalid operation on traffic light enum
+         break;
+   }
+   return light;
+}
+
+// Postfix Increment
+CppTrafficLight_E operator ++ (CppTrafficLight_E& light, int)
+{
+   CppTrafficLight_E old = light;
+   ++light;
+   return old;
+}
+
+std::ostream& operator << ( std::ostream& os, CppTrafficLight_E light )
+{
+   switch ( light )
+   {
+      case CppTrafficLight_E::Green:
+         return os << "Green (0)";
+
+      case CppTrafficLight_E::Yellow:
+         return os << "Yellow (1)";
+
+      case CppTrafficLight_E::Red:
+         return os << "Red (2)";
+      
+      default:
+         return os << "Unknown";
+   }
+}
+
+/*****************************************/
 
 int main(void)
 {
@@ -85,6 +176,33 @@ int main(void)
    vec2.Print();
    // vec2's array will automatically be free'd when vec2 goes out of scope
    // and its destructor is called.
+
+   /* Enums */
+   std::cout << std::endl;
+
+   enum CTrafficLight_E c_traffic_light = Red;
+   CppTrafficLight_E cpp_traffic_light = CppTrafficLight_E::Red;
+
+   std::cout << "Initial Enum Values: " << std::endl <<
+                "\tC-Style Enum: " << CTrafficLight_E_ToString(c_traffic_light) << std::endl <<
+                "\tC++-Style Enum: " << cpp_traffic_light << std::endl;
+
+   // Increment enums
+   c_traffic_light = (enum CTrafficLight_E)(c_traffic_light + 1);
+   cpp_traffic_light++;
+
+   std::cout << "Increment: " << std::endl <<
+                "\tC-Style Enum: " << CTrafficLight_E_ToString(c_traffic_light) << std::endl <<
+                "\tC++-Style Enum: " << cpp_traffic_light << std::endl;
+
+   // Increment enums
+   c_traffic_light = (enum CTrafficLight_E)(c_traffic_light + 2);
+   cpp_traffic_light++;
+   cpp_traffic_light++;
+
+   std::cout << "Incremented Twice More: " << std::endl <<
+                "\tC-Style Enum: " << CTrafficLight_E_ToString(c_traffic_light) << std::endl <<
+                "\tC++-Style Enum: " << cpp_traffic_light << std::endl;
 }
 
 /*****************************************/
