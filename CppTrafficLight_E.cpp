@@ -1,6 +1,16 @@
 #include "CppTrafficLight_E.hpp"
 #include <iostream>
 
+CppTrafficLight_E begin(CppTrafficLight_E)
+{
+   return CppTrafficLight_E::Green;
+}
+
+CppTrafficLight_E end(CppTrafficLight_E)
+{
+   return CppTrafficLight_E::NumOfTrafficLightOptions;
+}
+
 // Prefix Increment
 CppTrafficLight_E& operator ++ (CppTrafficLight_E& light)
 {
@@ -34,6 +44,21 @@ CppTrafficLight_E operator ++ (CppTrafficLight_E& light, int)
    return old;
 }
 
+CppTrafficLight_E begin(void)
+{
+   return CppTrafficLight_E::Green;
+}
+
+CppTrafficLight_E end(void)
+{
+   return CppTrafficLight_E::Red;
+}
+
+CppTrafficLight_E operator * ( CppTrafficLight_E light )
+{
+   return light;
+}
+
 std::ostream& operator << ( std::ostream& os, CppTrafficLight_E light )
 {
    switch ( light )
@@ -46,8 +71,12 @@ std::ostream& operator << ( std::ostream& os, CppTrafficLight_E light )
 
       case CppTrafficLight_E::Red:
          return os << "Red (2)";
+
+      case CppTrafficLight_E::NumOfTrafficLightOptions:
+         return os << "Number of Traffic Light Options (3)";
       
       default:
          return os << "Unknown";
    }
 }
+

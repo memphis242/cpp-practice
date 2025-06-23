@@ -10,12 +10,12 @@
 // implies that classes are the only way to couple data to operations
 // on that data, but that's far from the truth. See any one of the many
 // C collection libraries out there, including my own ccol!
-// As far as I can tell, the main advantages OOP languages like C++ offer
-// are mechanisms like interfaces and mix-ins, syntactic sugar like
-// .<method> on an object to call associated methods, and an easier time
-// generic programming (although that itself is a double-edged sword).
+// As far as I can tell, the main advantages OOP languages (like C++) offer
+// are "zero-overhead" abstractions, mechanisms like interfaces and mix-ins,
+// and an easier time generic programming.
 // Otherwise, you can still separate implementation from interface, have
-// "private" invisible members and methods, and even do generic programming.
+// _actually_ "private" invisible members and methods, and even do generic
+// programming.
 
 struct HalfBakedVector_S
 {
@@ -31,11 +31,17 @@ void VectorFree( struct HalfBakedVector_S& );
 
 class Vector
 {
+   private:
+      double * elements;
+      size_t sz;
+
    public:
       Vector(size_t sz):
-         // The lines below for the private variables of the class are called
-         // initializer list. Note that the '=' syntax won't work here. It
-         // needs to be the {} pair.
+         // The lines below are for the private variables of the class and
+         // are called the initializer list.
+	 // 🗒: The '=' syntax won't work here. It needs to be the {} pair.
+	 // 🗒: The order of initialization is based on the ordering of the
+	 // 	private member declarations! Note the order of this list...
          elements { new double[sz] },
          sz {sz}
          {
@@ -64,11 +70,7 @@ class Vector
             std::cout << elements[i] << " ";
          }
          std::cout << std::endl;
-      }
-      
-   private:
-      double * elements;
-      size_t sz;
+      }      
 };
 
 /*****************************************/
@@ -114,6 +116,16 @@ int main(void)
    std::cout << "Incremented Twice More: " << std::endl <<
                 "\tC-Style Enum: " << CTrafficLight_E_ToString(c_traffic_light) << std::endl <<
                 "\tC++-Style Enum: " << cpp_traffic_light << std::endl;
+
+   // Range-for over the enumeration
+   // Won't work because increment operation wraps around, so we never get to
+   // end().
+//   std::cout << '\n';
+//   for ( CppTrafficLight_E val : CppTrafficLight_E{} )
+//   {
+//      std::cout << val << ", ";
+//   }
+//   std::cout << '\n';
 }
 
 /*****************************************/

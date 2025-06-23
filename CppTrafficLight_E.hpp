@@ -8,6 +8,12 @@ enum class CppTrafficLight_E
    NumOfTrafficLightOptions
 };
 
-CppTrafficLight_E& operator ++ (CppTrafficLight_E& light);
-CppTrafficLight_E operator ++ (CppTrafficLight_E& light, int);
-std::ostream& operator << ( std::ostream& os, CppTrafficLight_E light );
+// Iterator "free" functions
+CppTrafficLight_E begin(CppTrafficLight_E);
+CppTrafficLight_E end(CppTrafficLight_E);
+
+// Overloaded operators
+CppTrafficLight_E& operator ++ ( CppTrafficLight_E& ); // Prefix Increment
+CppTrafficLight_E operator ++ ( CppTrafficLight_E&, int ); // Postfix Increment
+CppTrafficLight_E operator * ( CppTrafficLight_E );
+std::ostream& operator << ( std::ostream&, CppTrafficLight_E );
