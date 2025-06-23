@@ -33,3 +33,7 @@
 
 # List Files
 *.lst
+
+# vim
+*.swp
+
