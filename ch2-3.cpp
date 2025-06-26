@@ -67,9 +67,12 @@ class Vector
          if ( std::abs(i) >= _len )
          {
             throw std::out_of_range(
-                     std::string("Vector::operator[] idx ≥ vec len!") +
-                     std::string(" idx: ") +
-                     std::to_string(i)
+                     std::string("Vector::operator[] idx ≥ vec len! idx: ") +
+                     std::to_string(i) +
+                     std::string(", vector length: ") +
+                     std::to_string(_len) +
+                     std::string(", max valid idx: ") +
+                     std::to_string(_len - 1)
                   );
          }
 
