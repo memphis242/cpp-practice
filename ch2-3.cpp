@@ -1,4 +1,11 @@
+// Standard Library
 #include <iostream>
+#include <cstdlib>
+#include <cstdint>
+#include <cmath>
+#include <string>
+
+// User-Defined Headers
 #include "CppTrafficLight_E.hpp"
 #include "CTrafficLight_E.h"
 
@@ -17,15 +24,17 @@
 // _actually_ "private" invisible members and methods, and even do generic
 // programming.
 
-struct HalfBakedVector_S
+struct HalfBakedVector
 {
-   size_t sz;
+   size_t len;
    double * elements;
 };
 
-void VectorInit( HalfBakedVector_S&, size_t );
-void VectorPrintToStdout( struct HalfBakedVector_S& self );
-void VectorFree( struct HalfBakedVector_S& );
+void VectorInit( HalfBakedVector&, size_t );
+void VectorPrintToStdout( struct HalfBakedVector& self );
+void VectorFree( struct HalfBakedVector& );
+double VectorElementAt( struct HalfBakedVector& self, int32_t idx );
+void VectorSetElementAt( struct HalfBakedVector& self, int32_t idx, double val);
 /*****************************************/
 /*****************************************/
 
@@ -33,44 +42,80 @@ class Vector
 {
    private:
       double * elements;
-      size_t sz;
+      size_t _len;
 
    public:
-      Vector(size_t sz):
+      Vector(size_t _len):
          // The lines below are for the private variables of the class and
          // are called the initializer list.
 	 // 🗒: The '=' syntax won't work here. It needs to be the {} pair.
 	 // 🗒: The order of initialization is based on the ordering of the
 	 // 	private member declarations! Note the order of this list...
-         elements { new double[sz] },
-         sz {sz}
+         elements { new double[_len] },
+         _len {_len}
          {
             /* Empty constructor body */
          }
-      
+
       ~Vector()
       {
          delete[] elements;
       }
-      
+
       double& operator [] (int i)  // Operator [] overload (subscript function)
       {
-         return elements[i];
+         if ( std::abs(i) >= _len )
+         {
+            throw std::out_of_range(
+                     std::string("Vector::operator[] idx ≥ vec len!") +
+                     std::string(" idx: ") +
+                     std::to_string(i)
+                  );
+         }
+
+         size_t idx = i;
+         if ( i < 0 )
+         {
+            // Wrap-around. Allows for convenient indexing of last element
+            idx = _len + i;
+         }
+
+         return elements[idx];
       }
 
-      size_t Size()
+      size_t len()
       {
-         return sz;
+         return _len;
       }
-      
-      void Print()
+
+      double * begin()
       {
-         for ( size_t i = 0; i < sz; i++ )
+         return &elements[0];
+      }
+
+      double * end()
+      {
+         return &elements[_len];
+      }
+
+      const double * begin() const
+      {
+         return &elements[0];
+      }
+
+      const double * end() const
+      {
+         return &elements[_len];
+      }
+
+      void Print() const
+      {
+         for ( const auto& x : *this )
          {
-            std::cout << elements[i] << " ";
+            std::cout << x << " ";
          }
-         std::cout << std::endl;
-      }      
+         std::cout << '\n';
+      }
 };
 
 /*****************************************/
@@ -78,17 +123,54 @@ class Vector
 int main(void)
 {
    /* Half-baked procedural vector class usage */
-   struct HalfBakedVector_S vec1;
+   struct HalfBakedVector vec1;
    VectorInit( vec1, 10 );
-   // Print uninitialized elements of the vector...
+   for ( int32_t i = 0; i < 10; i++ )
+   {
+      VectorSetElementAt( vec1, i, (double)i * 2.5 );
+   }
+   std::cout << "vec1:" << '\n';
    VectorPrintToStdout(vec1);
-   VectorFree(vec1);
 
    /* First-draft of custom C++ vector class usage */
    Vector vec2(10);
+   for ( int32_t i = 0; i < 10; i++ )
+   {
+      vec2[i] = (double)i * 2.5;
+   }
+   std::cout << "vec2:" << '\n';
    vec2.Print();
+
+   std::cout << '\n';
+   std::cout << "Negative Indexing Demo:" << '\n';
+   std::cout << "VectorElementAt(vec1, -1): " << VectorElementAt(vec1, -1) << '\n';
+   std::cout << "vec2[-1]: " << vec2[-1] << '\n';
+
+   std::cout << '\n';
+   std::cout << "Exception Demo:" << '\n';
+   try
+   {
+      vec2[10000];
+   } catch ( std::out_of_range& e )
+   {
+      std::cout << "Caught out-of-bounds access on vec2[10000];" << '\n' <<
+                   '\t' << e.what();
+   }
+   std::cout << '\n';
+
+   try
+   {
+      vec2[-10000];
+   } catch ( std::out_of_range& e )
+   {
+      std::cout << "Caught out-of-bounds access on vec2[-10000];" << '\n' <<
+                   '\t' << e.what();
+   }
+   std::cout << '\n';
+
+   VectorFree(vec1);
    // vec2's array will automatically be free'd when vec2 goes out of scope
-   // and its destructor is called.
+   // and its destructor is called, so no need to explicitly free. RAII for ya!
 
    /* Enums */
    std::cout << std::endl;
@@ -129,27 +211,67 @@ int main(void)
 }
 
 /*****************************************/
-void VectorInit( struct HalfBakedVector_S& self, size_t sz )
+void VectorInit( struct HalfBakedVector& self, size_t len )
 {
-   self.elements = new double[sz];
-   self.sz = sz;
+   self.elements = new double[len];
+   self.len = len;
 }
 
 // Apparently, C++ lets you omit the `struct` keyword when declaring a struct
 // type... As if it's an automatic typedef. I dislike that... But given how
 // often aggergate types are typedef'd away in many places, this appeases
 // that (laziness).
-void VectorPrintToStdout( HalfBakedVector_S& self )
+void VectorPrintToStdout( HalfBakedVector& self )
 {
-   for ( size_t i = 0; i < self.sz; i++ )
+   for ( size_t i = 0; i < self.len; i++ )
    {
       std::cout << self.elements[i] << " ";
    }
    std::cout << std::endl;
 }
 
-void VectorFree( struct HalfBakedVector_S& self )
+void VectorFree( struct HalfBakedVector& self )
 {
    delete self.elements;
+}
+
+double VectorElementAt( struct HalfBakedVector& self, int32_t idx )
+{
+   int64_t i = std::abs(idx);
+   if ( i >= (int32_t)self.len )
+   {
+      // TODO: Return error for out-of-bounds?
+      return std::nan("");
+   }
+
+   // Wrap around to allow for negative indexing (convenient for indexing end
+   // of vector), like v[-1].
+   if ( idx < 0 )
+   {
+      i = idx + self.len;
+   }
+
+   return self.elements[i];
+}
+
+void VectorSetElementAt( struct HalfBakedVector& self, int32_t idx, double val)
+{
+   int64_t i = std::abs(idx);
+   if ( i >= (int32_t)self.len )
+   {
+      // TODO: Return error for out-of-bounds?
+      return;
+   }
+
+   // Wrap around to allow for negative indexing (convenient for indexing end
+   // of vector), like v[-1].
+   if ( i < 0 )
+   {
+      i += self.len;
+   }
+
+   self.elements[i] = val;
+
+   return;
 }
 /*****************************************/
