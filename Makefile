@@ -25,8 +25,8 @@ COMPILER_WARNINGS = \
     -Wall -Wextra -Wpedantic -pedantic-errors -Wconversion -Wdouble-promotion
 
 SANITIZERS = -fsanitize=bool -fsanitize=undefined -fsanitize-trap
-#COMPILER_STATIC_ANALYZER = -fanalyzer
-COMPILER_STATIC_ANALYZER =
+COMPILER_STATIC_ANALYZER = -fanalyzer
+#COMPILER_STATIC_ANALYZER =
 
 COMPILER_OPTIMIZATION_LEVEL_DEBUG = -Og -g3
 COMPILER_OPTIMIZATION_LEVEL_SPEED = -O3
