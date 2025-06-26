@@ -25,7 +25,8 @@ COMPILER_WARNINGS = \
     -Wall -Wextra -Wpedantic -pedantic-errors -Wconversion -Wdouble-promotion
 
 SANITIZERS = -fsanitize=bool -fsanitize=undefined -fsanitize-trap
-COMPILER_STATIC_ANALYZER = -fanalyzer
+#COMPILER_STATIC_ANALYZER = -fanalyzer
+COMPILER_STATIC_ANALYZER =
 
 COMPILER_OPTIMIZATION_LEVEL_DEBUG = -Og -g3
 COMPILER_OPTIMIZATION_LEVEL_SPEED = -O3
@@ -60,13 +61,12 @@ ch2-3.exe: $(OBJ_FILES) ch2-3.lst
 	@echo
 	$(GXX) $(LDFLAGS) $(OBJ_FILES) -o $@
 
-#%.$(TARGET_EXTENSION): %.o %.lst
-#	@echo
-#	@echo "----------------------------------------"
-#	@echo -e "\033[36mProducing output executable\033[0m $@..."
-#	@echo
-#	$(GXX) $(LDFLAGS) $< -o $@
-
+%.$(TARGET_EXTENSION): %.o %.lst
+	@echo
+	@echo "----------------------------------------"
+	@echo -e "\033[36mProducing output executable\033[0m $@..."
+	@echo
+	$(GXX) $(LDFLAGS) $< -o $@
 
 %.o: %.cpp
 	@echo
