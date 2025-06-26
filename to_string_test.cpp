@@ -22,6 +22,13 @@ When compiled with:
    
 It seems to just be the GCC static analyzer (-fanalyzer) involved with this.
 Removing -fanalyzer produces no warning.
+SOLUTION: After further investigation, I see in the GCC docs that even as of
+GCC 15.1, -fanalyzer is only suitable for C code, not C++. See the initial
+sentences on the option:
+   
+https://gcc.gnu.org/onlinedocs/gcc-15.1.0/gcc/Static-Analyzer-Options.html
+
+The full warning printout is shown below:
     
 In constructor 'std::__cxx11::basic_string<_CharT, _Traits, _Alloc>::basic_string() [with _CharT = char; _Traits = std::char_traits<char>; _Alloc = std::allocator<char>]':
 cc1plus.exe: warning: use of uninitialized value '<unknown>' [CWE-457] [-Wanalyzer-use-of-uninitialized-value]
