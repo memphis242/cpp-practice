@@ -195,12 +195,20 @@ int main(void)
    // Range-for over the enumeration
    // Won't work because increment operation wraps around, so we never get to
    // end().
-//   std::cout << '\n';
-//   for ( CppTrafficLight_E val : CppTrafficLight_E{} )
-//   {
-//      std::cout << val << ", ";
-//   }
-//   std::cout << '\n';
+   std::cout << '\n';
+   std::cout << "Attempting range-for loop to print out all possible CppTrafficLight_E values:";
+   std::cout << '\n';
+   i = 0;
+   for ( CppTrafficLight_E val : CppTrafficLight_E{} )
+   {
+      std::cout << val << ", ";
+      if ( ++i > 10 ) break;
+   }
+   std::cout << "(stopped after " << i << " iterations)";
+   std::cout << '\n' << '\t';
+   std::cout << "Does not work right because the ++ operator is set to wrap-around once we get"
+                " to the last valid enum, and range-for loops need a way to identify when the"
+                " iterator has incremented past the end to end the range-for." << '\n';
 }
 
 /*****************************************/
