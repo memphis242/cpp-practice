@@ -40,31 +40,27 @@ void VectorSetElementAt( struct HalfBakedVector& self, int32_t idx, double val);
 
 class Vector
 {
-   private:
-      double * elements;
-      size_t _len;
-
    public:
-      Vector(size_t _len):
+      Vector(size_t m_len):
          // The lines below are for the private variables of the class and
          // are called the initializer list.
 	 // 🗒: The '=' syntax won't work here. It needs to be the {} pair.
 	 // 🗒: The order of initialization is based on the ordering of the
 	 // 	private member declarations! Note the order of this list...
-         elements { new double[_len] },
-         _len {_len}
+         m_elements { new double[m_len] },
+         m_len {m_len}
          {
             /* Empty constructor body */
          }
 
       ~Vector()
       {
-         delete[] elements;
+         delete[] m_elements;
       }
 
       double& operator [] (int i)  // Operator [] overload (subscript function)
       {
-         if ( std::abs(i) >= _len )
+         if ( std::abs(i) >= m_len )
          {
             throw std::out_of_range(
                      std::string("Vector::operator[] idx ≥ vec len! idx: ") +
@@ -80,38 +76,28 @@ class Vector
          if ( i < 0 )
          {
             // Wrap-around. Allows for convenient indexing of last element
-            idx = _len + i;
+            idx = m_len + i;
          }
 
-         return elements[idx];
+         return m_elements[idx];
       }
 
-      size_t len()
+      size_t len() const
       {
-         return _len;
+         return m_len;
       }
 
-      double * begin()
+      double * begin(void) const
       {
-         return &elements[0];
+         return &m_elements[0];
       }
 
-      double * end()
+      double * end(void) const
       {
-         return &elements[_len];
+         return &m_elements[m_len];
       }
 
-      const double * begin() const
-      {
-         return &elements[0];
-      }
-
-      const double * end() const
-      {
-         return &elements[_len];
-      }
-
-      void Print() const
+      void Print(void) const
       {
          for ( const auto& x : *this )
          {
@@ -119,6 +105,10 @@ class Vector
          }
          std::cout << '\n';
       }
+
+   private:
+      double * m_elements;
+      size_t m_len;
 };
 
 /*****************************************/
