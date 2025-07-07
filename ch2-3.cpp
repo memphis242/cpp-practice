@@ -63,12 +63,15 @@ class Vector
          if ( std::abs(i) >= m_len )
          {
             throw std::out_of_range(
-                     std::string("Vector::operator[] idx ≥ vec len! idx: ") +
+                     // String concatenation /w '+' will only work if at least
+                     // one of the strings in the concatenation is std::string
+                     // and string literals are not std::string types.
+                     "Vector::operator[] idx ≥ vec len! idx: " +
                      std::to_string(i) +
-                     std::string(", vector length: ") +
-                     std::to_string(_len) +
-                     std::string(", max valid idx: ") +
-                     std::to_string(_len - 1)
+                     ", vector length: " +
+                     std::to_string(m_len) +
+                     ", max valid idx: " +
+                     std::to_string(m_len - 1)
                   );
          }
 
@@ -127,9 +130,10 @@ int main(void)
 
    /* First-draft of custom C++ vector class usage */
    Vector vec2(10);
-   for ( int32_t i = 0; i < 10; i++ )
+   size_t i = 0;
+   for (auto& x : vec2)
    {
-      vec2[i] = (double)i * 2.5;
+      x = (double)i++ * 2.5;
    }
    std::cout << "vec2:" << '\n';
    vec2.Print();
