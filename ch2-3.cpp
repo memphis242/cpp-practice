@@ -40,39 +40,38 @@ void VectorSetElementAt( struct HalfBakedVector& self, int32_t idx, double val);
 
 class Vector
 {
-   private:
-      double * elements;
-      size_t _len;
-
    public:
-      Vector(size_t _len):
+      Vector(size_t m_len):
          // The lines below are for the private variables of the class and
          // are called the initializer list.
 	 // 🗒: The '=' syntax won't work here. It needs to be the {} pair.
 	 // 🗒: The order of initialization is based on the ordering of the
 	 // 	private member declarations! Note the order of this list...
-         elements { new double[_len] },
-         _len {_len}
+         m_elements { new double[m_len] },
+         m_len {m_len}
          {
             /* Empty constructor body */
          }
 
       ~Vector()
       {
-         delete[] elements;
+         delete[] m_elements;
       }
 
       double& operator [] (int i)  // Operator [] overload (subscript function)
       {
-         if ( std::abs(i) >= _len )
+         if ( std::abs(i) >= m_len )
          {
             throw std::out_of_range(
-                     std::string("Vector::operator[] idx ≥ vec len! idx: ") +
+                     // String concatenation /w '+' will only work if at least
+                     // one of the strings in the concatenation is std::string
+                     // and string literals are not std::string types.
+                     "Vector::operator[] idx ≥ vec len! idx: " +
                      std::to_string(i) +
-                     std::string(", vector length: ") +
-                     std::to_string(_len) +
-                     std::string(", max valid idx: ") +
-                     std::to_string(_len - 1)
+                     ", vector length: " +
+                     std::to_string(m_len) +
+                     ", max valid idx: " +
+                     std::to_string(m_len - 1)
                   );
          }
 
@@ -80,38 +79,28 @@ class Vector
          if ( i < 0 )
          {
             // Wrap-around. Allows for convenient indexing of last element
-            idx = _len + i;
+            idx = m_len + i;
          }
 
-         return elements[idx];
+         return m_elements[idx];
       }
 
-      size_t len()
+      size_t len() const
       {
-         return _len;
+         return m_len;
       }
 
-      double * begin()
+      double * begin(void) const
       {
-         return &elements[0];
+         return &m_elements[0];
       }
 
-      double * end()
+      double * end(void) const
       {
-         return &elements[_len];
+         return &m_elements[m_len];
       }
 
-      const double * begin() const
-      {
-         return &elements[0];
-      }
-
-      const double * end() const
-      {
-         return &elements[_len];
-      }
-
-      void Print() const
+      void Print(void) const
       {
          for ( const auto& x : *this )
          {
@@ -119,6 +108,10 @@ class Vector
          }
          std::cout << '\n';
       }
+
+   private:
+      double * m_elements;
+      size_t m_len;
 };
 
 /*****************************************/
@@ -137,9 +130,10 @@ int main(void)
 
    /* First-draft of custom C++ vector class usage */
    Vector vec2(10);
-   for ( int32_t i = 0; i < 10; i++ )
+   size_t i = 0;
+   for (auto& x : vec2)
    {
-      vec2[i] = (double)i * 2.5;
+      x = (double)i++ * 2.5;
    }
    std::cout << "vec2:" << '\n';
    vec2.Print();
@@ -205,12 +199,20 @@ int main(void)
    // Range-for over the enumeration
    // Won't work because increment operation wraps around, so we never get to
    // end().
-//   std::cout << '\n';
-//   for ( CppTrafficLight_E val : CppTrafficLight_E{} )
-//   {
-//      std::cout << val << ", ";
-//   }
-//   std::cout << '\n';
+   std::cout << '\n';
+   std::cout << "Attempting range-for loop to print out all possible CppTrafficLight_E values:";
+   std::cout << '\n';
+   i = 0;
+   for ( CppTrafficLight_E val : CppTrafficLight_E{} )
+   {
+      std::cout << val << ", ";
+      if ( ++i > 10 ) break;
+   }
+   std::cout << "(stopped after " << i << " iterations)";
+   std::cout << '\n' << '\t';
+   std::cout << "Does not work right because the ++ operator is set to wrap-around once we get"
+                " to the last valid enum, and range-for loops need a way to identify when the"
+                " iterator has incremented past the end to end the range-for." << '\n';
 }
 
 /*****************************************/
