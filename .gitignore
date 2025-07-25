@@ -37,3 +37,5 @@
 # vim
 *.swp
 
+# Profiling Files (e.g., stack usage)
+*.su

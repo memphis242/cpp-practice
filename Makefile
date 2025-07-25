@@ -63,7 +63,9 @@ OBJ_FILES = ch2-3.o CTrafficLight_E.o CppTrafficLight_E.o
 
 benchmark:
 	@echo "Benchmark Time!"
-	$(GXX) $(COMPILER_STANDARD) -O2 -DNDEBUG $(BENCHMARK_DEFS) -o bench.$(TARGET_EXTENSION) bench.cpp $(BENCHMARK_LIBS)
+	$(GXX) $(COMPILER_STANDARD) -O2 -DNDEBUG -fstack-usage -c benchfcn1.cpp
+	$(GXX) $(COMPILER_STANDARD) -O2 -DNDEBUG -fstack-usage -c benchfcn2.cpp
+	$(GXX) $(COMPILER_STANDARD) -O2 -DNDEBUG $(BENCHMARK_DEFS) -o bench.$(TARGET_EXTENSION) bench.cpp benchfcn1.o benchfcn2.o $(BENCHMARK_LIBS)
 	./bench.$(TARGET_EXTENSION)
 
 ch2-3.exe: $(OBJ_FILES) ch2-3.lst
