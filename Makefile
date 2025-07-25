@@ -1,6 +1,7 @@
 .POSIX:
 
 .PHONY: clean
+.PHONY: benchmark
 
 STATIC_LIB_EXTENSION ?= lib
 TARGET_EXTENSION ?= exe
@@ -37,9 +38,11 @@ OPTIMIZATION_LVL ?= $(COMPILER_OPTIMIZATION_LEVEL_SPACE)
 
 COMPILER_STANDARD = -std=c++17
 
-INCLUDE_PATHS = -I.
+INCLUDE_PATHS =
 
 COMMON_DEFINES ?=
+
+BENCHMARK_DEFS = -DBENCHMARK_STATIC_DEFINE
 
 DIAGNOSTIC_FLAGS =
 
@@ -50,9 +53,18 @@ CXXFLAGS ?= $(COMPILER_WARNINGS) $(COMPILER_STATIC_ANALYZER) \
 				$(COMPILER_STANDARD) $(OPTIMIZATION_LVL) \
 				$(COMMON_DEFINES) $(INCLUDE_PATHS) -fdiagnostics-color
 
+BENCHMARK_LIBS = -lbenchmark -lbenchmark_main -lpthread -lshlwapi
+
+EXTERNAL_LIBS =
+
 LDFLAGS += $(DIAGNOSTIC_FLAGS)
 
 OBJ_FILES = ch2-3.o CTrafficLight_E.o CppTrafficLight_E.o
+
+benchmark:
+	@echo "Benchmark Time!"
+	$(GXX) $(COMPILER_STANDARD) -O2 -DNDEBUG $(BENCHMARK_DEFS) -o bench.$(TARGET_EXTENSION) bench.cpp $(BENCHMARK_LIBS)
+	./bench.$(TARGET_EXTENSION)
 
 ch2-3.exe: $(OBJ_FILES) ch2-3.lst
 	@echo
@@ -96,4 +108,4 @@ clean:
 	rm -f *.lst
 	rm -f *.o
 
-.PRECIOUS: %.o
+.PRECIOUS: %.o %.lst
